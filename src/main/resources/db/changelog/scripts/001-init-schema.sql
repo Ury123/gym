@@ -1,6 +1,6 @@
 CREATE TABLE users (
     id UUID PRIMARY KEY,
-    user_role VARCHAR(50) NOT NULL,
+    user_role ENUM('admin', 'user', 'trainer') NOT NULL,
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
@@ -28,9 +28,8 @@ CREATE TABLE trainer_info (
 
 CREATE TABLE trainer_schedule (
     id UUID PRIMARY KEY,
-    date DATE NOT NULL,
-    start_time TIME NOT NULL,
-    end_time TIME NOT NULL,
+    start_datetime TIMESTAMP NOT NULL,
+    end_datetime TIMESTAMP NOT NULL,
     trainer_info_id UUID REFERENCES trainer_info(id) ON DELETE CASCADE,
     gym_info_id UUID REFERENCES gym_info(id) ON DELETE CASCADE
 );
@@ -59,7 +58,22 @@ CREATE TABLE user_subscriptions (
 
 CREATE TABLE visit_history (
     id UUID PRIMARY KEY,
-    visit_date DATE NOT NULL,
-    visit_time TIME NOT NULL,
+    visit_datetime TIMESTAMP NOT NULL,
     user_id UUID REFERENCES users(id) ON DELETE CASCADE
 );
+
+ALTER TABLE users
+ADD CONSTRAINT email_format_check
+CHECK (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$');
+
+ALTER TABLE users
+ADD CONSTRAINT phone_format_check
+CHECK (phone ~* '/^(\+375)?(44|29|25|33)[0-9]{7}$');
+
+ALTER TABLE subscription
+ADD CONSTRAINT price_check
+CHECK (price > 0);
+
+ALTER TABLE user_subscriptions
+ADD CONSTRAINT remaining_trainings_check
+CHECK (remaining_trainings >= 0)

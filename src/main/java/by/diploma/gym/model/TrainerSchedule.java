@@ -14,6 +14,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
@@ -29,14 +30,11 @@ public class TrainerSchedule {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Column(nullable = false)
-    private LocalDate date;
+    @Column(name = "start_datetime", nullable = false)
+    private LocalDateTime startDateTime;
 
-    @Column(name = "start_time", nullable = false)
-    private LocalTime startTime;
-
-    @Column(name = "end_time", nullable = false)
-    private LocalTime endTime;
+    @Column(name = "end_datetime", nullable = false)
+    private LocalDateTime endDateTime;
 
     @ManyToOne
     @JoinColumn(name = "trainer_info_id")

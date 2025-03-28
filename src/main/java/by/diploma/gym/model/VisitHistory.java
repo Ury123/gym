@@ -13,6 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.UUID;
 
@@ -27,11 +28,8 @@ public class VisitHistory {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Column(name = "visit_date", nullable = false)
-    private LocalDate visitDate;
-
-    @Column(name = "visit_time", nullable = false)
-    private LocalTime visitTime;
+    @Column(name = "visit_datetime", nullable = false)
+    private LocalDateTime visitDateTime;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
