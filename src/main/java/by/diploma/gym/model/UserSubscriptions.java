@@ -8,6 +8,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,12 +28,16 @@ public class UserSubscriptions {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    @NotNull
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
+    @NotNull
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 
+    @NotNull
+    @PositiveOrZero
     @Column(name = "remaining_trainings")
     private Integer remainingTrainings;
 

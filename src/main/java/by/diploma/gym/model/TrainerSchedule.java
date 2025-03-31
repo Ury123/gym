@@ -9,6 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,9 +31,11 @@ public class TrainerSchedule {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    @NotNull
     @Column(name = "start_datetime", nullable = false)
     private LocalDateTime startDateTime;
 
+    @NotNull
     @Column(name = "end_datetime", nullable = false)
     private LocalDateTime endDateTime;
 

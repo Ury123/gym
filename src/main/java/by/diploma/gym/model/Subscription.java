@@ -6,6 +6,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,12 +26,16 @@ public class Subscription {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    @NotNull
     @Column(name = "amount_of_trainings", nullable = false)
     private Integer amountOfTrainings;
 
+    @NotNull
     @Column(name = "validity_period", nullable = false)
     private Integer validityPeriod;
 
+    @NotNull
+    @Positive
     @Column(nullable = false)
     private BigDecimal price;
 

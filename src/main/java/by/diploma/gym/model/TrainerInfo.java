@@ -9,6 +9,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,9 +33,12 @@ public class TrainerInfo {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @NotNull
+    @Size(max = 500)
     @Column(nullable = false)
     private String photo;
 
+    @NotNull
     @Column(nullable = false)
     private String description;
 
