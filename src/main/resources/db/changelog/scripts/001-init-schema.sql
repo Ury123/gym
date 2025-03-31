@@ -6,7 +6,7 @@ CREATE TABLE users (
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
-    phone VARCHAR(20) UNIQUE NOT NULL,
+    phone_number VARCHAR(13) UNIQUE NOT NULL,
     date_of_birth DATE NOT NULL,
     password VARCHAR(255) NOT NULL
 );
@@ -14,7 +14,7 @@ CREATE TABLE users (
 CREATE TABLE gym_info (
     id UUID PRIMARY KEY,
     address VARCHAR(255) NOT NULL,
-    phone_number VARCHAR(20) NOT NULL,
+    phone_number VARCHAR(10) NOT NULL,
     start_weekend_time TIME NOT NULL,
     end_weekend_time TIME NOT NULL,
     start_week_time TIME NOT NULL,
