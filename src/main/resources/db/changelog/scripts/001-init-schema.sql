@@ -1,8 +1,8 @@
-CREATE TYPE user_role_enum AS ENUM ('admin', 'user', 'trainer');
+CREATE TYPE user_role AS ENUM ('admin', 'user', 'trainer');
 
 CREATE TABLE users (
     id UUID PRIMARY KEY,
-    user_role user_role_enum NOT NULL,
+    user_role user_role NOT NULL,
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
@@ -13,12 +13,9 @@ CREATE TABLE users (
 
 CREATE TABLE gym_info (
     id UUID PRIMARY KEY,
-    address VARCHAR(255) NOT NULL,
+    address VARCHAR(255) UNIQUE NOT NULL,
     phone_number VARCHAR(10) NOT NULL,
-    start_weekend_time TIME NOT NULL,
-    end_weekend_time TIME NOT NULL,
-    start_week_time TIME NOT NULL,
-    end_week_time TIME NOT NULL
+    description TEXT NOT NULL
 );
 
 CREATE TABLE trainer_info (
@@ -33,26 +30,20 @@ CREATE TABLE trainer_schedule (
     start_datetime TIMESTAMP NOT NULL,
     end_datetime TIMESTAMP NOT NULL,
     trainer_info_id UUID REFERENCES trainer_info(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    gym_info_id UUID REFERENCES gym_info(id) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-CREATE TABLE appointment (
-    id UUID PRIMARY KEY,
-    user_id UUID REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    trainer_schedule_id UUID REFERENCES trainer_schedule(id) ON DELETE CASCADE ON UPDATE CASCADE
+    gym_info_id UUID REFERENCES gym_info(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE subscription (
     id UUID PRIMARY KEY,
     amount_of_trainings INT NOT NULL,
-    validity_period INT NOT NULL,
+    validity_period VARCHAR(50) NOT NULL,
     price DECIMAL(10,2) NOT NULL
 );
 
-CREATE TABLE user_subscriptions (
+CREATE TABLE user_subscription (
     id UUID PRIMARY KEY,
     start_date DATE NOT NULL,
-    end_date DATE NOT NULL,
     remaining_trainings INT,
     subscription_id UUID REFERENCES subscription(id) ON DELETE CASCADE ON UPDATE CASCADE,
     user_id UUID REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -80,6 +71,10 @@ ALTER TABLE subscription
 ADD CONSTRAINT price_check
 CHECK (price > 0);
 
-ALTER TABLE user_subscriptions
+ALTER TABLE user_subscription
 ADD CONSTRAINT remaining_trainings_check
-CHECK (remaining_trainings >= 0)
+CHECK (remaining_trainings >= 0);
+
+ALTER TABLE subscription
+ADD CONSTRAINT validity_period_email_format_check
+CHECK (validity_period ~* '^((\d+)\s+years?\s*)?((\d+)\s+months?\s*)?((\d+)\s+days?\s*)?$')

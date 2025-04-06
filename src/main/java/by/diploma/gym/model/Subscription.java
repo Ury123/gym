@@ -13,6 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.Period;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,7 +33,7 @@ public class Subscription {
 
     @NotNull
     @Column(name = "validity_period", nullable = false)
-    private Integer validityPeriod;
+    private Period validityPeriod;
 
     @NotNull
     @Positive
@@ -40,5 +41,5 @@ public class Subscription {
     private BigDecimal price;
 
     @OneToMany(mappedBy = "subscription")
-    private List<UserSubscriptions> userSubscriptions;
+    private List<UserSubscription> userSubscriptions;
 }

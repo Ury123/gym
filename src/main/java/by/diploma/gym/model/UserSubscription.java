@@ -21,8 +21,8 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "user_subscriptions")
-public class UserSubscriptions {
+@Table(name = "user_subscription")
+public class UserSubscription {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,10 +31,6 @@ public class UserSubscriptions {
     @NotNull
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
-
-    @NotNull
-    @Column(name = "end_date", nullable = false)
-    private LocalDate endDate;
 
     @NotNull
     @PositiveOrZero

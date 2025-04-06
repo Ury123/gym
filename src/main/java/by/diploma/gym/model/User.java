@@ -68,10 +68,10 @@ public class User {
     private String password;
 
     @OneToMany(mappedBy = "user")
-    private List<UserSubscriptions> userSubscriptions;
+    private List<UserSubscription> userSubscriptions;
 
     @OneToMany(mappedBy = "user")
-    private List<Appointment> appointments;
+    private List<TrainerSchedule> appointments;
 
     @OneToMany(mappedBy = "user")
     private List<VisitHistory> visitHistories;

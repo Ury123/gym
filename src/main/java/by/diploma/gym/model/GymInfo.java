@@ -40,20 +40,8 @@ public class GymInfo {
     private String phoneNumber;
 
     @NotNull
-    @Column(name ="start_weekend_time",nullable = false)
-    private LocalTime startWeekendTime;
-
-    @NotNull
-    @Column(name = "end_weekend_time", nullable = false)
-    private LocalTime endWeekendTime;
-
-    @NotNull
-    @Column(name = "start_week_time", nullable = false)
-    private LocalTime startWeekTime;
-
-    @NotNull
-    @Column(name = "end_week_time", nullable = false)
-    private LocalTime endWeekTime;
+    @Column(nullable = false)
+    private String description;
 
     @OneToMany(mappedBy = "gymInfo")
     private List<TrainerSchedule> trainerSchedules;

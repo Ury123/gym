@@ -47,6 +47,8 @@ public class TrainerSchedule {
     @JoinColumn(name = "gym_info_id")
     private GymInfo gymInfo;
 
-    @OneToMany(mappedBy = "trainerSchedule")
-    private List<Appointment> appointments;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
 }
