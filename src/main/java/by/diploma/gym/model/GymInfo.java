@@ -35,7 +35,7 @@ public class GymInfo {
 
     @NotNull
     @Size(min = 6, max = 10)
-    @Pattern(regexp = "^(8029)?[0-9]{6}$")
+    @Pattern(regexp = "^\\d{2,4}\\s?[0-9]{6}$")
     @Column(nullable = false)
     private String phoneNumber;
 
