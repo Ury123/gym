@@ -11,10 +11,10 @@ public class VarcharToPeriodConverter implements AttributeConverter<Period, Stri
     @Override
     public String convertToDatabaseColumn(Period period) {
         if (period == null) {
-            return null;
+            throw new IllegalArgumentException("Period cannot be null when converting to database column.");
         }
 
-        return String.format("%d years %d mons %d days",
+        return String.format("%d years %d months %d days",
                 period.getYears(),
                 period.getMonths(),
                 period.getDays());
@@ -38,8 +38,8 @@ public class VarcharToPeriodConverter implements AttributeConverter<Period, Stri
                 case "years":
                     years = value;
                     break;
-                case "mon":
-                case "mons":
+                case "month":
+                case "months":
                     months = value;
                     break;
                 case "day":

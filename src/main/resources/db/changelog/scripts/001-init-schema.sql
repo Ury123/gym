@@ -65,7 +65,7 @@ CHECK (phone_number ~* '^(\+375)?(44|29|25|33)[0-9]{7}$');
 
 ALTER TABLE gym_info
 ADD CONSTRAINT gym_phone_format_check
-CHECK (phone_number ~* '^(8029)?[0-9]{6}$');
+CHECK (phone_number ~* '^\d{2,4}\s?[0-9]{6}$');
 
 ALTER TABLE subscription
 ADD CONSTRAINT price_check
