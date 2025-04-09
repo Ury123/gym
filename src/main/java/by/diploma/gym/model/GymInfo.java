@@ -30,6 +30,7 @@ public class GymInfo {
     private UUID id;
 
     @NotNull
+    @Size(max = 50)
     @Column(nullable = false)
     private String address;
 
