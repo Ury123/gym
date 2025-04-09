@@ -31,7 +31,7 @@ public class GymInfo {
 
     @NotNull
     @Size(max = 50)
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String address;
 
     @NotNull
