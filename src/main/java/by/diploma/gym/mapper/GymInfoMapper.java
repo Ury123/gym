@@ -13,6 +13,6 @@ public interface GymInfoMapper {
 
     GymInfoResponse toResponse(GymInfo entity);
 
-    void updateEntityFromRequest(GymInfoRequest request, @MappingTarget GymInfo entity);
+    GymInfo updateEntityFromRequest(GymInfoRequest request, @MappingTarget GymInfo entity);
 
 }

@@ -54,9 +54,9 @@ public class GymInfoServiceImpl implements GymInfoService {
 
     @Override
     public GymInfoResponse getById(UUID id) {
-        return gymInfoRepository.findById(id)
-                .map(gymInfoMapper::toResponse)
+        GymInfo gymInfo = gymInfoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(GYM_NOT_FOUND_WITH_ID + id));
+        return gymInfoMapper.toResponse(gymInfo);
     }
 
     @Override

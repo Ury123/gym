@@ -55,7 +55,7 @@ public class GymInfoServiceImplTest {
     }
 
     @Test
-    void testCreate() {
+    void test_create_shouldSaveAndReturnResponse() {
         when(gymInfoMapper.toEntity(request)).thenReturn(entity);
         when(gymInfoRepository.save(entity)).thenReturn(entity);
         when(gymInfoMapper.toResponse(entity)).thenReturn(response);
@@ -66,7 +66,7 @@ public class GymInfoServiceImplTest {
     }
 
     @Test
-    void testGetById_Found() {
+    void test_getById_shouldReturnResponseIfFound() {
         when(gymInfoRepository.findById(id)).thenReturn(Optional.of(entity));
         when(gymInfoMapper.toResponse(entity)).thenReturn(response);
 
@@ -75,13 +75,13 @@ public class GymInfoServiceImplTest {
     }
 
     @Test
-    void testGetById_NotFound() {
+    void test_getById_shouldThrowExceptionIfNotFound() {
         when(gymInfoRepository.findById(id)).thenReturn(Optional.empty());
         assertThrows(RuntimeException.class, () -> gymInfoService.getById(id));
     }
 
     @Test
-    void testGetByAddress_Found() {
+    void test_getByAddress_shouldReturnResponseIfFound() {
         when(gymInfoRepository.findByAddress(address)).thenReturn(Optional.of(entity));
         when(gymInfoMapper.toResponse(entity)).thenReturn(response);
 
@@ -92,14 +92,14 @@ public class GymInfoServiceImplTest {
     }
 
     @Test
-    void testGetByAddress_NotFound() {
+    void test_getByAddress_shouldThrowExceptionIfNotFound() {
         when(gymInfoRepository.findByAddress(address)).thenReturn(Optional.empty());
 
         assertThrows(RuntimeException.class, () -> gymInfoService.getByAddress(address));
     }
 
     @Test
-    void testGetAll() {
+    void test_getAll_shouldReturnListOfResponses() {
         when(gymInfoRepository.findAll()).thenReturn(List.of(entity));
         when(gymInfoMapper.toResponse(entity)).thenReturn(response);
 
@@ -111,7 +111,7 @@ public class GymInfoServiceImplTest {
     }
 
     @Test
-    void testDelete() {
+    void test_delete_shouldRemoveEntityIfExists() {
         when(gymInfoRepository.existsById(id)).thenReturn(true);
         gymInfoService.delete(id);
         verify(gymInfoRepository).deleteById(id);

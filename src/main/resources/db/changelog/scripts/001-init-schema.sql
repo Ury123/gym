@@ -13,7 +13,7 @@ CREATE TABLE users (
 
 CREATE TABLE gym_info (
     id UUID PRIMARY KEY,
-    address VARCHAR(255) UNIQUE NOT NULL,
+    address VARCHAR(50) UNIQUE NOT NULL,
     phone_number VARCHAR(10) NOT NULL,
     description TEXT NOT NULL
 );
