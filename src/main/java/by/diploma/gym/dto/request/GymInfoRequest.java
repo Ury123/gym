@@ -9,7 +9,7 @@ import lombok.Data;
 public class GymInfoRequest {
 
     @NotNull
-    @Size(max = 50)
+    @Size(max = 255)
     private String address;
 
     @NotNull
