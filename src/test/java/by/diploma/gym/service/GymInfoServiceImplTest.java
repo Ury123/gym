@@ -2,6 +2,7 @@ package by.diploma.gym.service;
 
 import by.diploma.gym.dto.request.GymInfoRequest;
 import by.diploma.gym.dto.response.GymInfoResponse;
+import by.diploma.gym.dto.response.GymListResponse;
 import by.diploma.gym.mapper.GymInfoMapper;
 import by.diploma.gym.model.GymInfo;
 import by.diploma.gym.repository.GymInfoRepository;
@@ -35,12 +36,16 @@ public class GymInfoServiceImplTest {
     @Mock
     private GymInfoMapper gymInfoMapper;
 
+    @Mock
+    private GymInfo entity;
+
+    @Mock
+    private GymInfoResponse response;
+
     private final UUID id = UUID.randomUUID();
     private final String address = "Main St";
 
     private final GymInfoRequest request = new GymInfoRequest();
-    private final GymInfo entity = new GymInfo();
-    private final GymInfoResponse response = new GymInfoResponse();
 
     @BeforeEach
     void setUp() {
@@ -48,11 +53,6 @@ public class GymInfoServiceImplTest {
         request.setPhoneNumber("123 456789");
         request.setDescription("Nice gym");
 
-        entity.setId(id);
-        entity.setAddress(address);
-
-        response.setId(id);
-        response.setAddress(address);
     }
 
     @Test
@@ -61,6 +61,8 @@ public class GymInfoServiceImplTest {
         when(gymInfoRepository.save(entity)).thenReturn(entity);
         when(gymInfoMapper.toResponse(entity)).thenReturn(response);
 
+        when(response.getAddress()).thenReturn(address);
+
         GymInfoResponse result = gymInfoService.create(request);
         assertEquals("Main St", result.getAddress());
         verify(gymInfoRepository).save(entity);
@@ -68,6 +70,8 @@ public class GymInfoServiceImplTest {
 
     @Test
     void test_getById_shouldReturnResponseIfFound() {
+        when(response.getId()).thenReturn(id);
+
         when(gymInfoRepository.findById(id)).thenReturn(Optional.of(entity));
         when(gymInfoMapper.toResponse(entity)).thenReturn(response);
 
@@ -86,6 +90,9 @@ public class GymInfoServiceImplTest {
         when(gymInfoRepository.findByAddress(address)).thenReturn(Optional.of(entity));
         when(gymInfoMapper.toResponse(entity)).thenReturn(response);
 
+        when(response.getId()).thenReturn(id);
+        when(response.getAddress()).thenReturn(address);
+
         GymInfoResponse result = gymInfoService.getByAddress(address);
 
         assertEquals(id, result.getId());
@@ -100,15 +107,21 @@ public class GymInfoServiceImplTest {
     }
 
     @Test
-    void test_getAll_shouldReturnListOfResponses() {
-        when(gymInfoRepository.findAll()).thenReturn(List.of(entity));
-        when(gymInfoMapper.toResponse(entity)).thenReturn(response);
+    void test_getAll_shouldReturnGymListResponse() {
+        List<GymInfo> entities = List.of(entity);
+        List<GymInfoResponse> responses = List.of(response);
 
-        List<GymInfoResponse> result = gymInfoService.getAll();
+        when(response.getId()).thenReturn(id);
+        when(response.getAddress()).thenReturn(address);
 
-        assertEquals(1, result.size());
-        assertEquals(id, result.get(0).getId());
-        assertEquals(address, result.get(0).getAddress());
+        when(gymInfoRepository.findAll()).thenReturn(entities);
+        when(gymInfoMapper.toResponseList(entities)).thenReturn(responses);
+
+        GymListResponse result = gymInfoService.getAll();
+
+        assertEquals(1, result.getGyms().size());
+        assertEquals(id, result.getGyms().get(0).getId());
+        assertEquals(address, result.getGyms().get(0).getAddress());
     }
 
     @Test

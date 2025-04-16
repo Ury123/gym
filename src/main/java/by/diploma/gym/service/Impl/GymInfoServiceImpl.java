@@ -2,6 +2,7 @@ package by.diploma.gym.service.Impl;
 
 import by.diploma.gym.dto.request.GymInfoRequest;
 import by.diploma.gym.dto.response.GymInfoResponse;
+import by.diploma.gym.dto.response.GymListResponse;
 import by.diploma.gym.exceptions.EntityNotFoundException;
 import by.diploma.gym.mapper.GymInfoMapper;
 import by.diploma.gym.model.GymInfo;
@@ -67,11 +68,12 @@ public class GymInfoServiceImpl implements GymInfoService {
     }
 
     @Override
-    public List<GymInfoResponse> getAll() {
-        return gymInfoRepository.findAll()
-                .stream()
-                .map(gymInfoMapper::toResponse)
-                .toList();
+    public GymListResponse getAll() {
+        List<GymInfoResponse> gyms = gymInfoMapper.toResponseList(gymInfoRepository.findAll());
+
+        GymListResponse response = new GymListResponse();
+        response.setGyms(gyms);
+        return response;
     }
 
 }
