@@ -1,8 +1,8 @@
 package by.diploma.gym.service.Impl;
 
-import by.diploma.gym.dto.request.GymInfoRequest;
-import by.diploma.gym.dto.response.GymInfoResponse;
-import by.diploma.gym.dto.response.GymListResponse;
+import by.diploma.gym.dto.request.gymInfo.GymInfoRequest;
+import by.diploma.gym.dto.response.gymInfo.GymInfoResponse;
+import by.diploma.gym.dto.response.gymInfo.GymListResponse;
 import by.diploma.gym.exceptions.EntityNotFoundException;
 import by.diploma.gym.mapper.GymInfoMapper;
 import by.diploma.gym.model.GymInfo;
@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

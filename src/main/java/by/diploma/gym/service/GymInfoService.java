@@ -1,10 +1,9 @@
 package by.diploma.gym.service;
 
-import by.diploma.gym.dto.request.GymInfoRequest;
-import by.diploma.gym.dto.response.GymInfoResponse;
-import by.diploma.gym.dto.response.GymListResponse;
+import by.diploma.gym.dto.request.gymInfo.GymInfoRequest;
+import by.diploma.gym.dto.response.gymInfo.GymInfoResponse;
+import by.diploma.gym.dto.response.gymInfo.GymListResponse;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface GymInfoService {
