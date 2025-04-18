@@ -1,8 +1,8 @@
 package by.diploma.gym.service;
 
-import by.diploma.gym.dto.request.GymInfoRequest;
-import by.diploma.gym.dto.response.GymInfoResponse;
-import by.diploma.gym.dto.response.GymListResponse;
+import by.diploma.gym.dto.request.gymInfo.GymInfoRequest;
+import by.diploma.gym.dto.response.gymInfo.GymInfoResponse;
+import by.diploma.gym.dto.response.gymInfo.GymListResponse;
 import by.diploma.gym.mapper.GymInfoMapper;
 import by.diploma.gym.model.GymInfo;
 import by.diploma.gym.repository.GymInfoRepository;
@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;

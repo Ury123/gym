@@ -1,7 +1,7 @@
 package by.diploma.gym.mapper;
 
-import by.diploma.gym.dto.request.GymInfoRequest;
-import by.diploma.gym.dto.response.GymInfoResponse;
+import by.diploma.gym.dto.request.gymInfo.GymInfoRequest;
+import by.diploma.gym.dto.response.gymInfo.GymInfoResponse;
 import by.diploma.gym.model.GymInfo;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;

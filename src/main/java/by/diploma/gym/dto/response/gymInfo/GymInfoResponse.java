@@ -1,4 +1,4 @@
-package by.diploma.gym.dto.response;
+package by.diploma.gym.dto.response.gymInfo;
 
 import lombok.Data;
 
