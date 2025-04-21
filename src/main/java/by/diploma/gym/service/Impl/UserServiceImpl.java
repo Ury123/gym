@@ -18,10 +18,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private static final String USER_NOT_FOUND_WITH_ID = "User not found with id: ";
-    private static final String USER_NOT_FOUND_WITH_EMAIL = "User not found with email: ";
-    private static final String USER_NOT_FOUND_WITH_PHONE = "User not found with phone number: ";
-    private static final String USER_NOT_FOUND_WITH_NAME = "User not found with name: ";
+    private static final String USER_NOT_FOUND_WITH_ID_ERR_MSG = "User not found with id: ";
+    private static final String USER_NOT_FOUND_WITH_EMAIL_ERR_MSG = "User not found with email: ";
+    private static final String USER_NOT_FOUND_WITH_PHONE_ERR_MSG = "User not found with phone number: ";
+    private static final String USER_NOT_FOUND_WITH_NAME_ERR_MSG = "User not found with name: ";
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse update(UUID id, UserRequest request) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_WITH_ID + id));
+                .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_WITH_ID_ERR_MSG + id));
 
         userMapper.updateEntityFromRequest(request, user);
         return userMapper.toResponse(userRepository.save(user));
@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(UUID id) {
         if (!userRepository.existsById(id)) {
-            throw new EntityNotFoundException(USER_NOT_FOUND_WITH_ID + id);
+            throw new EntityNotFoundException(USER_NOT_FOUND_WITH_ID_ERR_MSG + id);
         }
         userRepository.deleteById(id);
     }
@@ -54,28 +54,28 @@ public class UserServiceImpl implements UserService {
     public UserResponse getById(UUID id) {
         return userRepository.findById(id)
                 .map(userMapper::toResponse)
-                .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_WITH_ID + id));
+                .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_WITH_ID_ERR_MSG + id));
     }
 
     @Override
     public UserResponse getByEmail(String email) {
         return userRepository.findByEmail(email)
                 .map(userMapper::toResponse)
-                .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_WITH_EMAIL + email));
+                .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_WITH_EMAIL_ERR_MSG + email));
     }
 
     @Override
     public UserResponse getByPhoneNumber(String phoneNumber) {
         return userRepository.findByPhoneNumber(phoneNumber)
                 .map(userMapper::toResponse)
-                .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_WITH_PHONE + phoneNumber));
+                .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_WITH_PHONE_ERR_MSG + phoneNumber));
     }
 
     @Override
     public UserResponse getByFullName(String firstName, String lastName) {
         return userRepository.findByFirstNameAndLastName(firstName, lastName)
                 .map(userMapper::toResponse)
-                .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_WITH_NAME + firstName + " " + lastName));
+                .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_WITH_NAME_ERR_MSG + firstName + " " + lastName));
     }
 
     @Override

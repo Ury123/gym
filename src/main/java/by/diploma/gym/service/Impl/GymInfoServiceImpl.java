@@ -19,8 +19,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class GymInfoServiceImpl implements GymInfoService {
 
-    private static final String GYM_NOT_FOUND_WITH_ID = "Gym not found with id: ";
-    private static final String GYM_NOT_FOUND_WITH_ADDRESS = "Gym not found with address: ";
+    private static final String GYM_NOT_FOUND_WITH_ID_ERR_MSG = "Gym not found with id: ";
+    private static final String GYM_NOT_FOUND_WITH_ADDRESS_ERR_MSG = "Gym not found with address: ";
 
 
     private final GymInfoRepository gymInfoRepository;
@@ -37,7 +37,7 @@ public class GymInfoServiceImpl implements GymInfoService {
     @Transactional
     public GymInfoResponse update(UUID id, GymInfoRequest request) {
         GymInfo entity = gymInfoRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(GYM_NOT_FOUND_WITH_ID + id));
+                .orElseThrow(() -> new EntityNotFoundException(GYM_NOT_FOUND_WITH_ID_ERR_MSG + id));
 
         gymInfoMapper.updateEntityFromRequest(request, entity);
         GymInfo updated = gymInfoRepository.save(entity);
@@ -47,7 +47,7 @@ public class GymInfoServiceImpl implements GymInfoService {
     @Override
     public void delete(UUID id) {
         if (!gymInfoRepository.existsById(id)) {
-            throw new EntityNotFoundException(GYM_NOT_FOUND_WITH_ID + id);
+            throw new EntityNotFoundException(GYM_NOT_FOUND_WITH_ID_ERR_MSG + id);
         }
         gymInfoRepository.deleteById(id);
     }
@@ -55,7 +55,7 @@ public class GymInfoServiceImpl implements GymInfoService {
     @Override
     public GymInfoResponse getById(UUID id) {
         GymInfo gymInfo = gymInfoRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(GYM_NOT_FOUND_WITH_ID + id));
+                .orElseThrow(() -> new EntityNotFoundException(GYM_NOT_FOUND_WITH_ID_ERR_MSG + id));
         return gymInfoMapper.toResponse(gymInfo);
     }
 
@@ -63,7 +63,7 @@ public class GymInfoServiceImpl implements GymInfoService {
     public GymInfoResponse getByAddress(String address) {
         return gymInfoRepository.findByAddress(address)
                 .map(gymInfoMapper::toResponse)
-                .orElseThrow(() -> new EntityNotFoundException(GYM_NOT_FOUND_WITH_ADDRESS + address));
+                .orElseThrow(() -> new EntityNotFoundException(GYM_NOT_FOUND_WITH_ADDRESS_ERR_MSG + address));
     }
 
     @Override

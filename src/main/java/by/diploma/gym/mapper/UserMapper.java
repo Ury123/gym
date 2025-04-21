@@ -5,10 +5,11 @@ import by.diploma.gym.dto.response.user.UserResponse;
 import by.diploma.gym.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface UserMapper {
 
     User toEntity(UserRequest request);

@@ -48,6 +48,8 @@ public class UserServiceImplTest {
     private final String phone = "+375291234567";
     private final String firstName = "John";
     private final String lastName = "Doe";
+    private final LocalDate dateOfBirth = LocalDate.of(1990, 1, 1);
+    private final String password = "password123";
 
     private final UserRequest request = new UserRequest();
 
@@ -57,8 +59,8 @@ public class UserServiceImplTest {
         request.setLastName(lastName);
         request.setEmail(email);
         request.setPhoneNumber(phone);
-        request.setDateOfBirth(LocalDate.of(1990, 1, 1));
-        request.setPassword("password123");
+        request.setDateOfBirth(dateOfBirth);
+        request.setPassword(password);
         request.setUserRole(UserRole.USER);
     }
 
