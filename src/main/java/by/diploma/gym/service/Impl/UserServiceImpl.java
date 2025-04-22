@@ -1,6 +1,7 @@
 package by.diploma.gym.service.Impl;
 
-import by.diploma.gym.dto.request.user.UserRequest;
+import by.diploma.gym.dto.request.user.UserRegisterRequest;
+import by.diploma.gym.dto.request.user.UserUpdateRequest;
 import by.diploma.gym.dto.response.user.UserListResponse;
 import by.diploma.gym.dto.response.user.UserResponse;
 import by.diploma.gym.exceptions.EntityNotFoundException;
@@ -27,14 +28,14 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Override
-    public UserResponse create(UserRequest request) {
+    public UserResponse register(UserRegisterRequest request) {
         User user = userMapper.toEntity(request);
         User saved = userRepository.save(user);
         return userMapper.toResponse(saved);
     }
 
     @Override
-    public UserResponse update(UUID id, UserRequest request) {
+    public UserResponse update(UUID id, UserUpdateRequest request) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_WITH_ID_ERR_MSG + id));
 
@@ -81,10 +82,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserListResponse getAll() {
         List<User> users = userRepository.findAll();
-        List<UserResponse> userResponses = userMapper.toResponseList(users);
-        UserListResponse listResponse = new UserListResponse();
-        listResponse.setUsers(userResponses);
-        return listResponse;
+        List<UserResponse> responses = userMapper.toResponseList(users);
+        UserListResponse result = new UserListResponse();
+        result.setUsers(responses);
+        return result;
     }
 
 }

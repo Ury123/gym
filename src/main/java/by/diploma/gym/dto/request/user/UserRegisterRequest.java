@@ -1,6 +1,6 @@
 package by.diploma.gym.dto.request.user;
 
-import by.diploma.gym.model.UserRole;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
@@ -10,10 +10,7 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-public class UserRequest {
-
-    @NotNull
-    private UserRole userRole;
+public class UserRegisterRequest {
 
     @NotNull
     private String firstName;
@@ -23,7 +20,7 @@ public class UserRequest {
 
     @NotNull
     @Size(min = 6, max = 255)
-    @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")
+    @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\\\.[A-Za-z]{2,}$")
     private String email;
 
     @NotNull
