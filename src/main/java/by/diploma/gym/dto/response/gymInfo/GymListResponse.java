@@ -6,5 +6,5 @@ import java.util.List;
 
 @Data
 public class GymListResponse  {
-    List<GymInfoResponse> gyms;
+    List<GymInfoDto> gyms;
 }

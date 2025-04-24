@@ -1,7 +1,7 @@
 package by.diploma.gym.mapper;
 
 import by.diploma.gym.dto.request.gymInfo.GymInfoRequest;
-import by.diploma.gym.dto.response.gymInfo.GymInfoResponse;
+import by.diploma.gym.dto.response.gymInfo.GymInfoDto;
 import by.diploma.gym.model.GymInfo;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -14,10 +14,10 @@ public interface GymInfoMapper {
 
     GymInfo toEntity(GymInfoRequest request);
 
-    GymInfoResponse toResponse(GymInfo entity);
+    GymInfoDto toResponse(GymInfo entity);
 
     GymInfo updateEntityFromRequest(GymInfoRequest request, @MappingTarget GymInfo entity);
 
-    List<GymInfoResponse> toResponseList(List<GymInfo> entities);
+    List<GymInfoDto> toResponseList(List<GymInfo> entities);
 
 }

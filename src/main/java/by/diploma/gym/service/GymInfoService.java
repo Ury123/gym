@@ -1,18 +1,18 @@
 package by.diploma.gym.service;
 
 import by.diploma.gym.dto.request.gymInfo.GymInfoRequest;
-import by.diploma.gym.dto.response.gymInfo.GymInfoResponse;
+import by.diploma.gym.dto.response.gymInfo.GymInfoDto;
 import by.diploma.gym.dto.response.gymInfo.GymListResponse;
 
 import java.util.UUID;
 
 public interface GymInfoService {
 
-    GymInfoResponse create(GymInfoRequest request);
-    GymInfoResponse update(UUID id, GymInfoRequest request);
+    GymInfoDto create(GymInfoRequest request);
+    GymInfoDto update(UUID id, GymInfoRequest request);
     void delete(UUID id);
-    GymInfoResponse getById(UUID id);
-    GymInfoResponse getByAddress(String address);
+    GymInfoDto getById(UUID id);
+    GymInfoDto getByAddress(String address);
     GymListResponse getAll();
 
 }

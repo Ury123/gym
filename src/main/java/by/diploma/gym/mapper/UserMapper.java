@@ -1,8 +1,8 @@
 package by.diploma.gym.mapper;
 
-import by.diploma.gym.dto.request.user.UserRegisterRequest;
+import by.diploma.gym.dto.request.user.UserRegistrationRequest;
 import by.diploma.gym.dto.request.user.UserUpdateRequest;
-import by.diploma.gym.dto.response.user.UserResponse;
+import by.diploma.gym.dto.response.user.UserDto;
 import by.diploma.gym.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -13,12 +13,12 @@ import java.util.List;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface UserMapper {
 
-    User toEntity(UserRegisterRequest request);
+    User toEntity(UserRegistrationRequest request);
 
-    UserResponse toResponse(User user);
+    UserDto toResponse(User user);
 
-    void updateEntityFromRequest(UserUpdateRequest request, @MappingTarget User user);
+    User updateEntityFromRequest(UserUpdateRequest request, @MappingTarget User user);
 
-    List<UserResponse> toResponseList(List<User> users);
+    List<UserDto> toResponseList(List<User> users);
 
 }

@@ -1,28 +1,32 @@
 package by.diploma.gym.service;
 
-import by.diploma.gym.dto.request.user.UserRegisterRequest;
+import by.diploma.gym.dto.request.user.UserRegistrationRequest;
+import by.diploma.gym.dto.request.user.UserSearchRequest;
 import by.diploma.gym.dto.request.user.UserUpdateRequest;
 import by.diploma.gym.dto.response.user.UserListResponse;
-import by.diploma.gym.dto.response.user.UserResponse;
+import by.diploma.gym.dto.response.user.UserDto;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface UserService {
 
-    UserResponse register(UserRegisterRequest request);
+    UserDto register(UserRegistrationRequest request);
 
-    UserResponse update(UUID id, UserUpdateRequest request);
+    UserDto update(UUID id, UserUpdateRequest request);
 
     void delete(UUID id);
 
-    UserResponse getById(UUID id);
+    UserDto getById(UUID id);
 
-    UserResponse getByEmail(String email);
+    UserDto getByEmail(String email);
 
-    UserResponse getByPhoneNumber(String phoneNumber);
+    UserDto getByPhoneNumber(String phoneNumber);
 
-    UserResponse getByFullName(String firstName, String lastName);
+    UserDto getByFullName(String firstName, String lastName);
 
     UserListResponse getAll();
+
+    List<UserDto> search(UserSearchRequest request);
 
 }

@@ -1,7 +1,7 @@
 package by.diploma.gym.service;
 
 import by.diploma.gym.dto.request.gymInfo.GymInfoRequest;
-import by.diploma.gym.dto.response.gymInfo.GymInfoResponse;
+import by.diploma.gym.dto.response.gymInfo.GymInfoDto;
 import by.diploma.gym.dto.response.gymInfo.GymListResponse;
 import by.diploma.gym.mapper.GymInfoMapper;
 import by.diploma.gym.model.GymInfo;
@@ -39,7 +39,7 @@ public class GymInfoServiceImplTest {
     private GymInfo entity;
 
     @Mock
-    private GymInfoResponse response;
+    private GymInfoDto response;
 
     private final UUID id = UUID.randomUUID();
     private final String address = "Main St";
@@ -62,7 +62,7 @@ public class GymInfoServiceImplTest {
 
         when(response.getAddress()).thenReturn(address);
 
-        GymInfoResponse result = gymInfoService.create(request);
+        GymInfoDto result = gymInfoService.create(request);
         assertEquals("Main St", result.getAddress());
         verify(gymInfoRepository).save(entity);
     }
@@ -74,7 +74,7 @@ public class GymInfoServiceImplTest {
         when(gymInfoRepository.findById(id)).thenReturn(Optional.of(entity));
         when(gymInfoMapper.toResponse(entity)).thenReturn(response);
 
-        GymInfoResponse result = gymInfoService.getById(id);
+        GymInfoDto result = gymInfoService.getById(id);
         assertEquals(id, result.getId());
     }
 
@@ -92,7 +92,7 @@ public class GymInfoServiceImplTest {
         when(response.getId()).thenReturn(id);
         when(response.getAddress()).thenReturn(address);
 
-        GymInfoResponse result = gymInfoService.getByAddress(address);
+        GymInfoDto result = gymInfoService.getByAddress(address);
 
         assertEquals(id, result.getId());
         assertEquals(address, result.getAddress());
@@ -108,7 +108,7 @@ public class GymInfoServiceImplTest {
     @Test
     void test_getAll_shouldReturnGymListResponse() {
         List<GymInfo> entities = List.of(entity);
-        List<GymInfoResponse> responses = List.of(response);
+        List<GymInfoDto> responses = List.of(response);
 
         when(response.getId()).thenReturn(id);
         when(response.getAddress()).thenReturn(address);

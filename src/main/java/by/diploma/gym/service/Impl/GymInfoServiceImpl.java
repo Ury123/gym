@@ -1,7 +1,7 @@
 package by.diploma.gym.service.Impl;
 
 import by.diploma.gym.dto.request.gymInfo.GymInfoRequest;
-import by.diploma.gym.dto.response.gymInfo.GymInfoResponse;
+import by.diploma.gym.dto.response.gymInfo.GymInfoDto;
 import by.diploma.gym.dto.response.gymInfo.GymListResponse;
 import by.diploma.gym.exceptions.EntityNotFoundException;
 import by.diploma.gym.mapper.GymInfoMapper;
@@ -27,7 +27,7 @@ public class GymInfoServiceImpl implements GymInfoService {
     private final GymInfoMapper gymInfoMapper;
 
     @Override
-    public GymInfoResponse create(GymInfoRequest request) {
+    public GymInfoDto create(GymInfoRequest request) {
         GymInfo entity = gymInfoMapper.toEntity(request);
         GymInfo saved = gymInfoRepository.save(entity);
         return gymInfoMapper.toResponse(saved);
@@ -35,7 +35,7 @@ public class GymInfoServiceImpl implements GymInfoService {
 
     @Override
     @Transactional
-    public GymInfoResponse update(UUID id, GymInfoRequest request) {
+    public GymInfoDto update(UUID id, GymInfoRequest request) {
         GymInfo entity = gymInfoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(GYM_NOT_FOUND_WITH_ID_ERR_MSG + id));
 
@@ -53,14 +53,14 @@ public class GymInfoServiceImpl implements GymInfoService {
     }
 
     @Override
-    public GymInfoResponse getById(UUID id) {
+    public GymInfoDto getById(UUID id) {
         GymInfo gymInfo = gymInfoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(GYM_NOT_FOUND_WITH_ID_ERR_MSG + id));
         return gymInfoMapper.toResponse(gymInfo);
     }
 
     @Override
-    public GymInfoResponse getByAddress(String address) {
+    public GymInfoDto getByAddress(String address) {
         return gymInfoRepository.findByAddress(address)
                 .map(gymInfoMapper::toResponse)
                 .orElseThrow(() -> new EntityNotFoundException(GYM_NOT_FOUND_WITH_ADDRESS_ERR_MSG + address));
@@ -68,7 +68,7 @@ public class GymInfoServiceImpl implements GymInfoService {
 
     @Override
     public GymListResponse getAll() {
-        List<GymInfoResponse> gyms = gymInfoMapper.toResponseList(gymInfoRepository.findAll());
+        List<GymInfoDto> gyms = gymInfoMapper.toResponseList(gymInfoRepository.findAll());
 
         GymListResponse response = new GymListResponse();
         response.setGyms(gyms);

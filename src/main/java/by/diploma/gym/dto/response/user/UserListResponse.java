@@ -7,6 +7,6 @@ import java.util.List;
 @Data
 public class UserListResponse {
 
-    private List<UserResponse> users;
+    private List<UserDto> users;
 
 }

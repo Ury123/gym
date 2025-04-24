@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.UUID;
 
 @Data
-public class GymInfoResponse {
+public class GymInfoDto {
 
     private UUID id;
     private String address;
