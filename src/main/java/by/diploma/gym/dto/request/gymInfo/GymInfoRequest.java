@@ -1,4 +1,4 @@
-package by.diploma.gym.dto.request;
+package by.diploma.gym.dto.request.gymInfo;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
