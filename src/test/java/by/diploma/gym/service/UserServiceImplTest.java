@@ -3,7 +3,7 @@ package by.diploma.gym.service;
 import by.diploma.gym.dto.request.user.UserRegistrationRequest;
 import by.diploma.gym.dto.request.user.UserSearchRequest;
 import by.diploma.gym.dto.request.user.UserUpdateRequest;
-import by.diploma.gym.dto.response.user.UserListResponse;
+import by.diploma.gym.dto.response.PageResponse;
 import by.diploma.gym.dto.response.user.UserDto;
 import by.diploma.gym.exceptions.EntityNotFoundException;
 import by.diploma.gym.mapper.UserMapper;
@@ -16,6 +16,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
@@ -113,40 +117,25 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void test_getByEmail_shouldReturnResponseIfFound() {
-        when(userRepository.findByEmail(registerEmail)).thenReturn(Optional.of(entity));
-        when(userMapper.toResponse(entity)).thenReturn(response);
-        when(response.getEmail()).thenReturn(registerEmail);
+    void test_getAll_shouldReturnPageResponse() {
+        Pageable pageable = PageRequest.of(0, 10);
+        List<User> users = List.of(entity);
+        List<UserDto> userDtos = List.of(response);
 
-        UserDto result = userService.getByEmail(registerEmail);
+        Page<User> page = new PageImpl<>(users, pageable, users.size());
 
-        assertEquals(registerEmail, result.getEmail());
-    }
-
-    @Test
-    void test_getByPhone_shouldReturnResponseIfFound() {
-        when(userRepository.findByPhoneNumber(registerPhone)).thenReturn(Optional.of(entity));
-        when(userMapper.toResponse(entity)).thenReturn(response);
-        when(response.getPhoneNumber()).thenReturn(registerPhone);
-
-        UserDto result = userService.getByPhoneNumber(registerPhone);
-
-        assertEquals(registerPhone, result.getPhoneNumber());
-    }
-
-    @Test
-    void test_getAll_shouldReturnUserListResponse() {
-        List<User> entities = List.of(entity);
-        List<UserDto> responses = List.of(response);
-
-        when(userRepository.findAll()).thenReturn(entities);
-        when(userMapper.toResponseList(entities)).thenReturn(responses);
+        when(userRepository.findAll(pageable)).thenReturn(page);
+        when(userMapper.toResponseList(users)).thenReturn(userDtos);
         when(response.getId()).thenReturn(id);
 
-        UserListResponse result = userService.getAll();
+        PageResponse<UserDto> result = userService.getAll(pageable);
 
-        assertEquals(1, result.getUsers().size());
-        assertEquals(id, result.getUsers().get(0).getId());
+        assertEquals(1, result.getContent().size());
+        assertEquals(id, result.getContent().get(0).getId());
+        assertEquals(1, result.getTotalElements());
+        assertEquals(1, result.getTotalPages());
+        assertEquals(0, result.getPage());
+        assertEquals(10, result.getSize());
     }
 
     @Test
@@ -166,85 +155,39 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void test_search_shouldReturnUsersByEmail() {
+    void test_search_shouldReturnPageResponse() {
+        Pageable pageable = PageRequest.of(0, 10);
         searchRequest.setEmail("example");
 
         List<User> users = List.of(entity);
-        List<UserDto> responses = List.of(response);
+        List<UserDto> userDtos = List.of(response);
 
-        when(userRepository.findAll(any(Specification.class))).thenReturn(users);
-        when(userMapper.toResponseList(users)).thenReturn(responses);
+        Page<User> page = new PageImpl<>(users, pageable, users.size());
+
+        when(userRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(page);
+        when(userMapper.toResponseList(users)).thenReturn(userDtos);
         when(response.getEmail()).thenReturn(registerEmail);
 
-        List<UserDto> result = userService.search(searchRequest);
+        PageResponse<UserDto> result = userService.search(searchRequest, pageable);
 
-        assertEquals(1, result.size());
-        assertEquals(registerEmail, result.get(0).getEmail());
-        verify(userRepository).findAll(any(Specification.class));
+        assertEquals(1, result.getContent().size());
+        assertEquals(registerEmail, result.getContent().get(0).getEmail());
+        assertEquals(1, result.getTotalElements());
     }
 
     @Test
-    void test_search_shouldReturnUsersByPhoneNumber() {
-        searchRequest.setPhoneNumber("37529");
+    void test_search_shouldReturnEmptyPageResponse() {
+        Page<User> emptyPage = new PageImpl<>(List.of(), PageRequest.of(0, 10), 0);
 
-        List<User> users = List.of(entity);
-        List<UserDto> responses = List.of(response);
+        when(userRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(emptyPage);
 
-        when(userRepository.findAll(any(Specification.class))).thenReturn(users);
-        when(userMapper.toResponseList(users)).thenReturn(responses);
-        when(response.getPhoneNumber()).thenReturn(registerPhone);
+        PageResponse<UserDto> result = userService.search(searchRequest, PageRequest.of(0, 10));
 
-        List<UserDto> result = userService.search(searchRequest);
-
-        assertEquals(1, result.size());
-        assertEquals(registerPhone, result.get(0).getPhoneNumber());
+        assertTrue(result.getContent().isEmpty());
+        assertEquals(0, result.getTotalElements());
+        assertEquals(0, result.getTotalPages());
+        assertEquals(0, result.getPage());
+        assertEquals(10, result.getSize());
     }
-
-    @Test
-    void test_search_shouldReturnUsersByFirstAndLastName() {
-        searchRequest.setFirstName("John");
-        searchRequest.setLastName("Doe");
-
-        List<User> users = List.of(entity);
-        List<UserDto> responses = List.of(response);
-
-        when(userRepository.findAll(any(Specification.class))).thenReturn(users);
-        when(userMapper.toResponseList(users)).thenReturn(responses);
-        when(response.getFirstName()).thenReturn(registerFirstName);
-        when(response.getLastName()).thenReturn(registerLastName);
-
-        List<UserDto> result = userService.search(searchRequest);
-
-        assertEquals(1, result.size());
-        assertEquals(registerFirstName, result.get(0).getFirstName());
-        assertEquals(registerLastName, result.get(0).getLastName());
-    }
-
-    @Test
-    void test_search_shouldReturnEmptyListIfNoMatches() {
-        searchRequest.setEmail("notfound");
-
-        when(userRepository.findAll(any(Specification.class))).thenReturn(List.of());
-        when(userMapper.toResponseList(List.of())).thenReturn(List.of());
-
-        List<UserDto> result = userService.search(searchRequest);
-
-        assertTrue(result.isEmpty());
-    }
-
-    @Test
-    void test_search_shouldReturnAllIfNoFiltersProvided() {
-        List<User> users = List.of(entity);
-        List<UserDto> responses = List.of(response);
-
-        when(userRepository.findAll(any(Specification.class))).thenReturn(users);
-        when(userMapper.toResponseList(users)).thenReturn(responses);
-
-        List<UserDto> result = userService.search(searchRequest);
-
-        assertEquals(1, result.size());
-        verify(userRepository).findAll(any(Specification.class));
-    }
-
 
 }

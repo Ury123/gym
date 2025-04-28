@@ -3,14 +3,17 @@ package by.diploma.gym.service.Impl;
 import by.diploma.gym.dto.request.user.UserRegistrationRequest;
 import by.diploma.gym.dto.request.user.UserSearchRequest;
 import by.diploma.gym.dto.request.user.UserUpdateRequest;
-import by.diploma.gym.dto.response.user.UserListResponse;
+import by.diploma.gym.dto.response.PageResponse;
 import by.diploma.gym.dto.response.user.UserDto;
 import by.diploma.gym.exceptions.EntityNotFoundException;
 import by.diploma.gym.mapper.UserMapper;
 import by.diploma.gym.model.User;
 import by.diploma.gym.repository.UserRepository;
 import by.diploma.gym.service.UserService;
+import by.diploma.gym.specification.UserSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -22,9 +25,6 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
 
     private static final String USER_NOT_FOUND_WITH_ID_ERR_MSG = "User not found with id: ";
-    private static final String USER_NOT_FOUND_WITH_EMAIL_ERR_MSG = "User not found with email: ";
-    private static final String USER_NOT_FOUND_WITH_PHONE_ERR_MSG = "User not found with phone number: ";
-    private static final String USER_NOT_FOUND_WITH_NAME_ERR_MSG = "User not found with name: ";
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -61,62 +61,37 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .map(userMapper::toResponse)
-                .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_WITH_EMAIL_ERR_MSG + email));
+    public PageResponse<UserDto> getAll(Pageable pageable) {
+        Page<User> page = userRepository.findAll(pageable);
+
+        PageResponse<UserDto> response = new PageResponse<>();
+        response.setContent(userMapper.toResponseList(page.getContent()));
+        response.setPage(page.getNumber());
+        response.setSize(page.getSize());
+        response.setTotalElements(page.getTotalElements());
+        response.setTotalPages(page.getTotalPages());
+
+        return response;
     }
 
     @Override
-    public UserDto getByPhoneNumber(String phoneNumber) {
-        return userRepository.findByPhoneNumber(phoneNumber)
-                .map(userMapper::toResponse)
-                .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_WITH_PHONE_ERR_MSG + phoneNumber));
+    public PageResponse<UserDto> search(UserSearchRequest request, Pageable pageable) {
+        Specification<User> spec = Specification
+                .where(UserSpecification.emailContains(request.getEmail()))
+                .and(UserSpecification.phoneContains(request.getPhoneNumber()))
+                .and(UserSpecification.firstNameContains(request.getFirstName()))
+                .and(UserSpecification.lastNameContains(request.getLastName()));
+
+        Page<User> page = userRepository.findAll(spec, pageable);
+
+        PageResponse<UserDto> response = new PageResponse<>();
+        response.setContent(userMapper.toResponseList(page.getContent()));
+        response.setPage(page.getNumber());
+        response.setSize(page.getSize());
+        response.setTotalElements(page.getTotalElements());
+        response.setTotalPages(page.getTotalPages());
+
+        return response;
     }
-
-    @Override
-    public UserDto getByFullName(String firstName, String lastName) {
-        return userRepository.findByFirstNameAndLastName(firstName, lastName)
-                .map(userMapper::toResponse)
-                .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_WITH_NAME_ERR_MSG + firstName + " " + lastName));
-    }
-
-    @Override
-    public UserListResponse getAll() {
-        List<User> users = userRepository.findAll();
-        List<UserDto> responses = userMapper.toResponseList(users);
-        UserListResponse result = new UserListResponse();
-        result.setUsers(responses);
-        return result;
-    }
-
-    @Override
-    public List<UserDto> search(UserSearchRequest request) {
-        Specification<User> spec = Specification.where(null);
-
-        if (request.getEmail() != null) {
-            spec = spec.and((root, query, cb) ->
-                    cb.like(cb.lower(root.get("email")), "%" + request.getEmail().toLowerCase() + "%"));
-        }
-
-        if (request.getPhoneNumber() != null) {
-            spec = spec.and((root, query, cb) ->
-                    cb.like(cb.lower(root.get("phoneNumber")), "%" + request.getPhoneNumber().toLowerCase() + "%"));
-        }
-
-        if (request.getFirstName() != null) {
-            spec = spec.and((root, query, cb) ->
-                    cb.like(cb.lower(root.get("firstName")), "%" + request.getFirstName().toLowerCase() + "%"));
-        }
-
-        if (request.getLastName() != null) {
-            spec = spec.and((root, query, cb) ->
-                    cb.like(cb.lower(root.get("lastName")), "%" + request.getLastName().toLowerCase() + "%"));
-        }
-
-        List<User> users = userRepository.findAll(spec);
-        return userMapper.toResponseList(users);
-    }
-
 
 }
