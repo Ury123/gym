@@ -19,8 +19,6 @@ public interface UserService {
 
     UserDto getById(UUID id);
 
-    PageResponse<UserDto> getAll(Pageable pageable);
-
-    PageResponse<UserDto> search(UserSearchRequest request, Pageable pageable);
+    PageResponse<UserDto> search(UserSearchRequest request);
 
 }

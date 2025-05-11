@@ -10,4 +10,9 @@ public class UserSearchRequest {
     private String firstName;
     private String lastName;
 
+    private Integer page = 0;
+    private Integer size = 10;
+    private String sortBy = "lastName";
+    private String sortDirection = "asc";
+
 }

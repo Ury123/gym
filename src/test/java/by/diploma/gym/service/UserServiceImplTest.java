@@ -16,10 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
@@ -117,28 +114,6 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void test_getAll_shouldReturnPageResponse() {
-        Pageable pageable = PageRequest.of(0, 10);
-        List<User> users = List.of(entity);
-        List<UserDto> userDtos = List.of(response);
-
-        Page<User> page = new PageImpl<>(users, pageable, users.size());
-
-        when(userRepository.findAll(pageable)).thenReturn(page);
-        when(userMapper.toResponseList(users)).thenReturn(userDtos);
-        when(response.getId()).thenReturn(id);
-
-        PageResponse<UserDto> result = userService.getAll(pageable);
-
-        assertEquals(1, result.getContent().size());
-        assertEquals(id, result.getContent().get(0).getId());
-        assertEquals(1, result.getTotalElements());
-        assertEquals(1, result.getTotalPages());
-        assertEquals(0, result.getPage());
-        assertEquals(10, result.getSize());
-    }
-
-    @Test
     void test_delete_shouldDeleteUserIfExists() {
         when(userRepository.existsById(id)).thenReturn(true);
 
@@ -156,38 +131,70 @@ public class UserServiceImplTest {
 
     @Test
     void test_search_shouldReturnPageResponse() {
-        Pageable pageable = PageRequest.of(0, 10);
         searchRequest.setEmail("example");
+        searchRequest.setPage(0);
+        searchRequest.setSize(10);
+        searchRequest.setSortBy("lastName");
+        searchRequest.setSortDirection("asc");
+
+        Pageable expectedPageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "lastName"));
 
         List<User> users = List.of(entity);
-        List<UserDto> userDtos = List.of(response);
+        Page<User> page = new PageImpl<>(users, expectedPageable, users.size());
 
-        Page<User> page = new PageImpl<>(users, pageable, users.size());
+        PageResponse<UserDto> expectedResponse = new PageResponse<>();
+        expectedResponse.setContent(List.of(response));
+        expectedResponse.setPage(0);
+        expectedResponse.setSize(10);
+        expectedResponse.setTotalElements(1L);
+        expectedResponse.setTotalPages(1);
 
-        when(userRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(page);
-        when(userMapper.toResponseList(users)).thenReturn(userDtos);
+        when(userRepository.findAll(any(Specification.class), eq(expectedPageable))).thenReturn(page);
+        when(userMapper.toPageResponse(page)).thenReturn(expectedResponse);
         when(response.getEmail()).thenReturn(registerEmail);
 
-        PageResponse<UserDto> result = userService.search(searchRequest, pageable);
+        PageResponse<UserDto> result = userService.search(searchRequest);
 
         assertEquals(1, result.getContent().size());
         assertEquals(registerEmail, result.getContent().get(0).getEmail());
         assertEquals(1, result.getTotalElements());
+        assertEquals(0, result.getPage());
+        assertEquals(10, result.getSize());
+
+        verify(userRepository).findAll(any(Specification.class), eq(expectedPageable));
+        verify(userMapper).toPageResponse(page);
     }
 
     @Test
     void test_search_shouldReturnEmptyPageResponse() {
-        Page<User> emptyPage = new PageImpl<>(List.of(), PageRequest.of(0, 10), 0);
+        searchRequest.setPage(0);
+        searchRequest.setSize(10);
+        searchRequest.setSortBy("lastName");
+        searchRequest.setSortDirection("asc");
 
-        when(userRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(emptyPage);
+        Pageable expectedPageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "lastName"));
+        Page<User> emptyPage = new PageImpl<>(List.of(), expectedPageable, 0);
 
-        PageResponse<UserDto> result = userService.search(searchRequest, PageRequest.of(0, 10));
+        PageResponse<UserDto> expectedResponse = new PageResponse<>();
+        expectedResponse.setContent(List.of());
+        expectedResponse.setPage(0);
+        expectedResponse.setSize(10);
+        expectedResponse.setTotalElements(0L);
+        expectedResponse.setTotalPages(0);
+
+        when(userRepository.findAll(any(Specification.class), eq(expectedPageable))).thenReturn(emptyPage);
+        when(userMapper.toPageResponse(emptyPage)).thenReturn(expectedResponse);
+
+        PageResponse<UserDto> result = userService.search(searchRequest);
 
         assertTrue(result.getContent().isEmpty());
         assertEquals(0, result.getTotalElements());
         assertEquals(0, result.getTotalPages());
         assertEquals(0, result.getPage());
         assertEquals(10, result.getSize());
+
+        verify(userRepository).findAll(any(Specification.class), eq(expectedPageable));
+        verify(userMapper).toPageResponse(emptyPage);
     }
 
 }

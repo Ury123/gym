@@ -7,13 +7,16 @@ import by.diploma.gym.dto.response.PageResponse;
 import by.diploma.gym.dto.response.user.UserDto;
 import by.diploma.gym.exceptions.EntityNotFoundException;
 import by.diploma.gym.mapper.UserMapper;
+import by.diploma.gym.model.GymInfo;
 import by.diploma.gym.model.User;
 import by.diploma.gym.repository.UserRepository;
 import by.diploma.gym.service.UserService;
 import by.diploma.gym.specification.UserSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -61,35 +64,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageResponse<UserDto> getAll(Pageable pageable) {
-        Page<User> page = userRepository.findAll(pageable);
-
-        PageResponse<UserDto> response = new PageResponse<>();
-        response.setContent(userMapper.toResponseList(page.getContent()));
-        response.setPage(page.getNumber());
-        response.setSize(page.getSize());
-        response.setTotalElements(page.getTotalElements());
-        response.setTotalPages(page.getTotalPages());
-
-        return response;
-    }
-
-    @Override
-    public PageResponse<UserDto> search(UserSearchRequest request, Pageable pageable) {
+    public PageResponse<UserDto> search(UserSearchRequest request) {
         Specification<User> spec = Specification
                 .where(UserSpecification.emailContains(request.getEmail()))
                 .and(UserSpecification.phoneContains(request.getPhoneNumber()))
                 .and(UserSpecification.firstNameContains(request.getFirstName()))
                 .and(UserSpecification.lastNameContains(request.getLastName()));
 
+        Sort sort = Sort.by(Sort.Direction.fromString(request.getSortDirection()), request.getSortBy());
+        Pageable pageable = PageRequest.of(request.getPage(), request.getSize(), sort);
+
         Page<User> page = userRepository.findAll(spec, pageable);
 
-        PageResponse<UserDto> response = new PageResponse<>();
-        response.setContent(userMapper.toResponseList(page.getContent()));
-        response.setPage(page.getNumber());
-        response.setSize(page.getSize());
-        response.setTotalElements(page.getTotalElements());
-        response.setTotalPages(page.getTotalPages());
+        PageResponse<UserDto> response = userMapper.toPageResponse(page);
+//        PageResponse<UserDto> response = new PageResponse<>();
+//        response.setContent(userMapper.toResponseList(page.getContent()));
+//        response.setPage(page.getNumber());
+//        response.setSize(page.getSize());
+//        response.setTotalElements(page.getTotalElements());
+//        response.setTotalPages(page.getTotalPages());
 
         return response;
     }

@@ -22,7 +22,6 @@ public class GymInfoServiceImpl implements GymInfoService {
     private static final String GYM_NOT_FOUND_WITH_ID_ERR_MSG = "Gym not found with id: ";
     private static final String GYM_NOT_FOUND_WITH_ADDRESS_ERR_MSG = "Gym not found with address: ";
 
-
     private final GymInfoRepository gymInfoRepository;
     private final GymInfoMapper gymInfoMapper;
 
