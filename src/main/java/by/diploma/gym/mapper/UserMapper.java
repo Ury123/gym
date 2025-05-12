@@ -5,10 +5,7 @@ import by.diploma.gym.dto.request.user.UserUpdateRequest;
 import by.diploma.gym.dto.response.PageResponse;
 import by.diploma.gym.dto.response.user.UserDto;
 import by.diploma.gym.model.User;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -20,6 +17,7 @@ public interface UserMapper {
 
     UserDto toResponse(User user);
 
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     User updateEntityFromRequest(UserUpdateRequest request, @MappingTarget User user);
 
     List<UserDto> toResponseList(List<User> users);

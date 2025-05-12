@@ -71,19 +71,12 @@ public class UserServiceImpl implements UserService {
                 .and(UserSpecification.firstNameContains(request.getFirstName()))
                 .and(UserSpecification.lastNameContains(request.getLastName()));
 
-        Sort sort = Sort.by(Sort.Direction.fromString(request.getSortDirection()), request.getSortBy());
-        Pageable pageable = PageRequest.of(request.getPage(), request.getSize(), sort);
+        Sort sort = Sort.by(Sort.Direction.fromString(request.getPageable().getSortDirection()), request.getPageable().getSortBy());
+        Pageable pageable = PageRequest.of(request.getPageable().getPage(), request.getPageable().getSize(), sort);
 
         Page<User> page = userRepository.findAll(spec, pageable);
 
         PageResponse<UserDto> response = userMapper.toPageResponse(page);
-//        PageResponse<UserDto> response = new PageResponse<>();
-//        response.setContent(userMapper.toResponseList(page.getContent()));
-//        response.setPage(page.getNumber());
-//        response.setSize(page.getSize());
-//        response.setTotalElements(page.getTotalElements());
-//        response.setTotalPages(page.getTotalPages());
-
         return response;
     }
 

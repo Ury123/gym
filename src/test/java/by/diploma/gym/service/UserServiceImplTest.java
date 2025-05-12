@@ -1,5 +1,6 @@
 package by.diploma.gym.service;
 
+import by.diploma.gym.dto.request.PageableRequest;
 import by.diploma.gym.dto.request.user.UserRegistrationRequest;
 import by.diploma.gym.dto.request.user.UserSearchRequest;
 import by.diploma.gym.dto.request.user.UserUpdateRequest;
@@ -131,11 +132,14 @@ public class UserServiceImplTest {
 
     @Test
     void test_search_shouldReturnPageResponse() {
+        PageableRequest pageableRequest = new PageableRequest();
+        pageableRequest.setPage(0);
+        pageableRequest.setSize(10);
+        pageableRequest.setSortBy("lastName");
+        pageableRequest.setSortDirection("asc");
+
         searchRequest.setEmail("example");
-        searchRequest.setPage(0);
-        searchRequest.setSize(10);
-        searchRequest.setSortBy("lastName");
-        searchRequest.setSortDirection("asc");
+        searchRequest.setPageable(pageableRequest);
 
         Pageable expectedPageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "lastName"));
 
@@ -167,10 +171,13 @@ public class UserServiceImplTest {
 
     @Test
     void test_search_shouldReturnEmptyPageResponse() {
-        searchRequest.setPage(0);
-        searchRequest.setSize(10);
-        searchRequest.setSortBy("lastName");
-        searchRequest.setSortDirection("asc");
+        PageableRequest pageableRequest = new PageableRequest();
+        pageableRequest.setPage(0);
+        pageableRequest.setSize(10);
+        pageableRequest.setSortBy("lastName");
+        pageableRequest.setSortDirection("asc");
+
+        searchRequest.setPageable(pageableRequest);
 
         Pageable expectedPageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "lastName"));
         Page<User> emptyPage = new PageImpl<>(List.of(), expectedPageable, 0);
